@@ -10,7 +10,7 @@
 
 exec="{{sentry_home}}/env/bin/sentry"
 prog="sentry-worker"
-config="{{sentry_home}}/config.py"
+config="{{sentry_home}}/sentry.conf.py"
 pidfile="/var/run/$prog"
 
 [ -e /etc/sysconfig/$prog ] && . /etc/sysconfig/$prog

@@ -2,7 +2,7 @@
 
 sentry_enabled: yes                                       # Enable the role
 sentry_remove: no                                         # Uninstall the role
-sentry_version: 7.7.4
+sentry_version: 8.2.3
 sentry_home: /usr/lib/sentry                              # Deploy sentry to the folder
 sentry_user: sentry                                       # Run as user
 sentry_hostname: "{{inventory_hostname}}"
@@ -36,7 +36,7 @@ sentry_web_port: 9000
 sentry_web_options: { workers: 3, limit_request_line: 0, secure_scheme_headers: {'X-FORWARDED-PROTO': 'https'} }
 
 # Setup databases
-sentry_db_engine: django.db.backends.sqlite3
+sentry_db_engine: sentry.db.postgres
 sentry_db_name: "{{sentry_home}}/sentry.sqlite"
 sentry_db_user: postgres
 sentry_db_password: ""

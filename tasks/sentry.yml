@@ -56,8 +56,13 @@
 - include: services.red.yml
   when: ansible_os_family == 'RedHat'
 
-- name: Configure Sentry
-  template: src=config.py.j2 dest={{sentry_home}}/config.py owner={{sentry_user}}
+- name: Configure Sentry - part 1
+  template: src=sentry.conf.py.j2 dest={{sentry_home}}/sentry.conf.py owner={{sentry_user}}
+  register: config
+  notify: [sentry restart]
+
+- name: Configure Sentry - part 2
+  template: src=config.yml.j2 dest={{sentry_home}}/config.yml owner={{sentry_user}}
   register: config
   notify: [sentry restart]
 
@@ -70,7 +75,7 @@
   become_user: "{{sentry_user}}"
 
 - name: Collect sentry static files
-  shell: "{{sentry_home}}/sentry collectstatic --noinput"
+  shell: "{{sentry_home}}/sentry django collectstatic --noinput"
   register: sentry_collected
   changed_when: not sentry_collected.stderr.startswith('\n0 static files copied')
   become_user: "{{sentry_user}}"

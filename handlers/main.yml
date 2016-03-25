@@ -5,9 +5,11 @@
   with_items:
     - sentry-web
     - sentry-worker
+    - sentry-beat
 
 - name: sentry reload
   service: name={{item}} state=reloaded
   with_items:
     - sentry-web
     - sentry-worker
+    - sentry-beat
