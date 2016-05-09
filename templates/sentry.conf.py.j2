@@ -174,26 +174,6 @@ SENTRY_WEB_HOST = '{{sentry_web_host}}'
 SENTRY_WEB_PORT = {{sentry_web_port}}
 SENTRY_WEB_OPTIONS = {{sentry_web_options|to_nice_json}}
 
-
-###############
-# Mail Server #
-###############
-
-# For more information check Django's documentation:
-# https://docs.djangoproject.com/en/1.6/topics/email/
-{% for option in sentry_email_settings or [] %}
-{{option}}
-{% endfor %}
-
-# The email address to send on behalf of
-SERVER_EMAIL = '{{sentry_server_email}}'
-
-
-# If you're using mailgun for inbound mail, set your API key and configure a
-# route to forward to /api/hooks/mailgun/inbound/
-MAILGUN_API_KEY = ''
-
-
 ##################
 # Other Settings #
 ##################

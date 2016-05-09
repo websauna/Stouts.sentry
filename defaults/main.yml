@@ -71,14 +71,14 @@ sentry_bitbucket_consumer_key: ""
 sentry_bitbucket_consumer_secret: ""
 
 # Email settings
-sentry_server_email: 'sentry@{{sentry_hostname}}'         # From email
-sentry_email_settings: []                                 # Ex. sentry_email_settings:
-                                                          #       - EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-                                                          #       - EMAIL_HOST = 'localhost'
-                                                          #       - EMAIL_HOST_PASSWORD = ''
-                                                          #       - EMAIL_HOST_USER = ''
-                                                          #       - EMAIL_PORT = 25
-                                                          #       - EMAIL_USE_TLS = False
+sentry_server_email: "sentry@{{sentry_hostname}}"
+sentry_option_mail_backend: "django.core.mail.backends.smtp.EmailBackend"
+sentry_option_mail_host: "localhost"
+sentry_option_mail_password: ""
+sentry_option_mail_username: ""
+sentry_option_mail_port: 25
+sentry_option_mail_use_tls: False
+sentry_option_mail_mailgun_api_key: ""
 
 # Logging
 sentry_access_log: /var/log/sentry-access.log

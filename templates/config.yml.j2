@@ -18,3 +18,12 @@ redis.clusters:
       0:
         host: '{{sentry_redis_host}}'
         port: {{sentry_redis_port}}
+
+mail.backend: '{{sentry_option_mail_backend}}'
+mail.host: '{{sentry_option_mail_host}}'
+mail.password: '{{sentry_option_mail_password}}'
+mail.username: '{{sentry_option_mail_username}}'
+mail.port: {{sentry_option_mail_port }}
+mail.use-tls: {{sentry_option_mail_use_tls}}
+mail.mailgun-api-key: '{{sentry_option_mail_mailgun_api_key}}'
+mail.from: '{{sentry_server_email}}'
