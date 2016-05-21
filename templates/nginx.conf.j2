@@ -71,10 +71,14 @@ server {
       limit_req   zone=two  burst=10  nodelay;
     }
 
+    # TODO: The static URL has a hash that should come from a file /home/sentry/sentry/sentry/_static/version
+    # And should be somehow dynamically be pulled from the server by Ansible.
+    # Now manually hardcoded for our Sentry version
+    # as the version should not change unless the assets themselves are edited.
+    # Now disbled in config.py.j2
     location /_static/ {
         access_log off;
         root {{sentry_home}};
         expires max;
     }
-
 }

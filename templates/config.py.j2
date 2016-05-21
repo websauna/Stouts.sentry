@@ -8,9 +8,8 @@ import os.path
 CONF_ROOT = os.path.dirname(__file__)
 STATIC_ROOT = '{{sentry_home}}/_static'
 
-SECRET_KEY = '{{sentry_secret_key}}'
-SENTRY_URL_PREFIX = '{{ "https" if sentry_ssl_certificate else "http" }}://{{sentry_hostname}}{% if sentry_port != '80' %}:{{sentry_port}}{% endif %}'
-SENTRY_ADMIN_EMAIL = '{{sentry_admin_email}}'
+# Prevent version being generated in the static URL string
+STATIC_URL = '/_static/'
 
 DATABASES = {
     'default': {
@@ -42,14 +41,6 @@ BROKER_URL = '{{sentry_broker_url}}'
 
 {% if sentry_buffer %}
 SENTRY_BUFFER = '{{sentry_buffer}}'
-SENTRY_REDIS_OPTIONS = {
-    'hosts': {
-        0: {
-            'host': '{{sentry_redis_host}}',
-            'port': {{sentry_redis_port}},
-        }
-    }
-}
 SENTRY_TSDB = 'sentry.tsdb.redis.RedisTSDB'
 {% endif %}
 
@@ -64,7 +55,6 @@ SENTRY_WEB_HOST = '{{sentry_web_host}}'
 SENTRY_WEB_PORT = {{sentry_web_port}}
 SENTRY_WEB_OPTIONS = {{sentry_web_options|to_nice_json}}
 
-SERVER_EMAIL = '{{sentry_server_email}}'
 {% for option in sentry_email_settings or [] %}
 {{option}}
 {% endfor %}
