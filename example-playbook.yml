@@ -1,0 +1,36 @@
+#
+# Setup Sentry running on HTTPS protected Nginx web server, PostgreSQL database, upstream SMTP eemail. The access is protected by Let's encrypt certificate.
+#
+# Ubuntu 14.04
+#
+
+- hosts: sentry
+
+  become: yes
+  become_user: root
+
+  vars:
+    notify_email: mikko@example.com
+    server_email_domain: example.com
+    postfix_domain: example.com
+
+  pre_tasks:
+
+    # This contains smtp username and password for websauna.smtp
+    - include_vars: secrets.yml
+      tags: sentry
+
+    - name: Install system default Python
+      apt: name={{item}} update_cache=yes
+      with_items: [python-virtualenv, python-dev]
+
+  roles:
+  - {role: ansible-letsencrypt, tags: 'letsencrypt'}
+  - {role: websauna.smtp, tags: 'email'}
+  - {role: websauna.shell, tags: 'shell'}
+  - {role: ANXS.postgresql, tags: 'psql'}
+  - {role: Stouts.nginx, tags: 'nginx'}
+  - {role: Stouts.sentry, tags: 'sentry'}
+
+
+

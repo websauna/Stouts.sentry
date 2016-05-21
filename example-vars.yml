@@ -1,0 +1,123 @@
+---
+server_fqdn: sentry.example.com
+server_email: sentry@example.com
+
+# Let's encrypt certificate
+letsencrypt_webroot_path: /var/www/html
+letsencrypt_email: dev@example.com
+letsencrypt_cert_domains:
+  - '{{ server_fqdn }}'
+letsencrypt_renewal_command_args: '--renew-hook "systemctl restart nginx"'
+
+# Basic settings
+postgresql_version: 9.5
+postgresql_ext_install_dev_headers: yes
+postgresql_encoding: 'UTF-8'
+postgresql_locale: 'en_US.UTF-8'
+
+postgresql_admin_user: "postgres"
+postgresql_default_auth_method: "trust"
+
+postgresql_cluster_name: "main"
+postgresql_cluster_reset: false
+
+# List of databases to be created (optional)
+postgresql_databases:
+  - name: sentry
+    hstore: yes         # flag to install the hstore extension on this database (yes/no)
+    uuid_ossp: yes      # flag to install the uuid-ossp extension on this database (yes/no)
+
+# List of users to be created (optional)
+postgresql_users:
+  - name: sentry
+    pass: sentry
+    encrypted: no       # denotes if the password is already encrypted.
+
+# List of user privileges to be applied (optional)
+postgresql_user_privileges:
+  - name: sentry                   # user name
+    db: sentry                  # database
+    priv: "ALL"                 # privilege string format: example: INSERT,UPDATE/table:SELECT/anothertable:ALL
+    role_attr_flags: "CREATEDB" # role attribute flags
+
+# Sentry instance
+sentry_enabled: yes                                       # Enable the role
+sentry_version: 8.4.1
+sentry_home: /home/sentry/sentry                              # Deploy sentry to the folder
+sentry_user: sentry                                       # Run as user
+
+# For Nginx + Django config
+# You need to add sentry.local to /etc/hosts and point it to the public IP of Vagrant machine
+sentry_hostname: '{{ server_fqdn }}'
+sentry_port: 443
+sentry_https_url: yes
+sentry_access_log: /var/log/nginx/sentry.access.log
+sentry_error_log: /var/log/nginx/sentry.error.log
+
+sentry_ssl_certificate: /etc/letsencrypt/live/{{ server_fqdn }}/cert.pem
+sentry_ssl_certificate_key: /etc/letsencrypt/live/{{ server_fqdn }}/privkey.pem
+
+# in vault
+# sentry_secret_key: x
+sentry_extensions: []                                     # List of sentry-extensions
+
+# in vault
+# sentry_admin_password: x
+sentry_teams: [example]                                    # Creates teams for admin user, set blank for skip
+sentry_projects:                                          # Creates project for admin user, set blank for skip
+
+- name: staging
+  platform: python
+  team: example
+
+- name: website
+  platform: python
+  team: example
+
+sentry_config_additional: []                              # List of additional options
+
+# Setup gunicorn
+sentry_web_host: 127.0.0.1
+sentry_web_port: 9000
+sentry_web_options: { workers: 3, limit_request_line: 0, secure_scheme_headers: {'X-FORWARDED-PROTO': 'https'} }
+
+# Setup databases
+sentry_db_engine: django.db.backends.postgresql_psycopg2
+sentry_db_name: sentry
+sentry_db_user: sentry
+sentry_db_password: sentry
+sentry_db_host: localhost
+sentry_db_port: ""
+sentry_db_options: {}
+
+# Setup cache
+sentry_cache_backend: "redis_cache.RedisCache"
+sentry_cache_location: "{{redis_bind}}:{{redis_port}}"
+
+# Queue settings
+sentry_broker_url: "redis://{{redis_bind}}:{{redis_port}}"
+
+# Buffer settings
+sentry_buffer: "sentry.buffer.redis.RedisBuffer"
+sentry_redis_host: "{{redis_bind}}"
+sentry_redis_port: "{{redis_port}}"
+
+# Use local Postfix for email
+sentry_server_email: '{{ server_email }}'         # From email
+sentry_notify_email: '{{ notify_email }}'
+sentry_email_settings:
+    - EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    - EMAIL_HOST: 'localhost'
+    - EMAIL_PORT: 25
+    - EMAIL_HOST_USER: ''
+    - EMAI_HOST_PASSWORD: ''
+
+# The following parameters are for toggling dependencies
+redis_enabled: yes
+nginx_enabled: yes
+# Don't use Stouts.python role, use system default Python
+python_enabled: no
+sentry_virtualenv_command: virtualenv
+sentry_python: python2.7
+
+sentry_ssl_redirect: yes

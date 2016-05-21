@@ -15,6 +15,10 @@ Ansible role which install and setup [Sentry](https://getsentry.com)
 
 - [Stouts.postfix](https://github.com/Stouts/Stouts.postfix)
 
+#### Examples
+
+See `example-vars.yml` and `example-playbook.yml`.
+
 
 #### Variables
 
