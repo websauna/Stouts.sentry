@@ -61,6 +61,11 @@
   register: config
   notify: [sentry restart]
 
+- name: Configure Sentry (8.0 YAML)
+  template: src=config.yml.j2 dest={{sentry_home}}/config.yml owner={{sentry_user}}
+  register: config
+  notify: [sentry restart]
+
 - file: state=directory path={{sentry_home}} owner={{sentry_user}} recurse=yes
 
 - name: Upgrade sentry
