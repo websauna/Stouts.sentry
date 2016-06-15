@@ -60,11 +60,12 @@
   template: src=config.py.j2 dest={{sentry_home}}/config.py owner={{sentry_user}}
   register: config
   notify: [sentry restart]
+  tags: sentry-config
 
 - name: Configure Sentry (8.0 YAML)
   template: src=config.yml.j2 dest={{sentry_home}}/config.yml owner={{sentry_user}}
-  register: config
   notify: [sentry restart]
+  tags: sentry-config
 
 - file: state=directory path={{sentry_home}} owner={{sentry_user}} recurse=yes
 
@@ -80,14 +81,22 @@
   changed_when: not sentry_collected.stderr.startswith('\n0 static files copied')
   become_user: "{{sentry_user}}"
 
-- name: Setup initial data
-  template: src=setup.py.j2 dest={{sentry_home}}/setup.py owner={{sentry_user}} mode=0755
-  register: setup
+#- name: Setup initial data
+#  template: src=setup.py.j2 dest={{sentry_home}}/setup.py owner={{sentry_user}} mode=0755
+#  register: setup
 
-- shell: env/bin/python setup.py
-    chdir={{sentry_home}}
-  when: setup.changed
-  become_user: "{{sentry_user}}"
+# Not compatible with the latest Sentry - setup data manually through web
+ # - shell: true env/bin/python setup.py
+ # chdir={{sentry_home}}
+#- shell: "echo foobar"
+#  when: setup.changed
+#  become_user: "{{sentry_user}}"
+
+# 8.0+ way to create users
+- name: Setup superuser
+  command: "env/bin/sentry --config config.py createuser --superuser --email {{sentry_admin_email}} --password {{sentry_admin_password}} chdir={{sentry_home}}"
+  ignore_errors: yes  # Raises error on second run when user exists
+  tags: sentry-config
 
 - name: Configure Nginx
   template: src=nginx.conf.j2 dest={{nginx_dir|default('/etc/nginx')}}/sites-enabled/sentry.conf

@@ -76,3 +76,9 @@ BITBUCKET_CONSUMER_SECRET = '{{sentry_bitbucket_consumer_secret}}'
 {% for option in sentry_config_additional or [] %}
 {{option}}
 {% endfor %}
+
+# Disable self registration
+# https://github.com/getsentry/sentry/issues/2663
+SENTRY_FEATURES['auth:register'] = False
+SENTRY_FEATURES['social-auth:register'] = False
+
