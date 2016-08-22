@@ -81,4 +81,9 @@ BITBUCKET_CONSUMER_SECRET = '{{sentry_bitbucket_consumer_secret}}'
 # https://github.com/getsentry/sentry/issues/2663
 SENTRY_FEATURES['auth:register'] = False
 SENTRY_FEATURES['social-auth:register'] = False
+SENTRY_OPTIONS['system.secret-key'] = "{{ sentry_secret_key }}"
+# SECRET_KEY = "{{ sentry_secret_key }}"
 
+SENTRY_OPTIONS["mail.from"] = "{{ server_email }}"
+# SERVER_EMAIL = "{{ server_email }}"
+DEFAULT_FROM_EMAIL = "{{ server_email }}"

@@ -70,13 +70,14 @@
 - file: state=directory path={{sentry_home}} owner={{sentry_user}} recurse=yes
 
 - name: Upgrade sentry
-  shell: "{{sentry_home}}/sentry upgrade --noinput"
+  shell: "{{sentry_bin}}/sentry --config {{ sentry_home }}/config.py upgrade --noinput"
   register: sentry_upgrade
   changed_when: sentry_upgrade.rc
   become_user: "{{sentry_user}}"
+  tags: sentry-upgrade
 
 - name: Collect sentry static files
-  shell: "{{sentry_home}}/sentry django collectstatic --noinput"
+  shell: "{{sentry_bin}}/sentry --config {{ sentry_home }}/config.py django collectstatic --noinput"
   register: sentry_collected
   changed_when: not sentry_collected.stderr.startswith('\n0 static files copied')
   become_user: "{{sentry_user}}"
@@ -93,10 +94,10 @@
 #  become_user: "{{sentry_user}}"
 
 # 8.0+ way to create users
-- name: Setup superuser
-  command: "env/bin/sentry --config config.py createuser --superuser --email {{sentry_admin_email}} --password {{sentry_admin_password}} chdir={{sentry_home}}"
-  ignore_errors: yes  # Raises error on second run when user exists
-  tags: sentry-config
+# - name: Setup superuser
+#  command: "{{ sentry_bin }}/sentry --config config.py createuser --superuser --email {{sentry_admin_email}} --password #{{sentry_admin_password}} chdir={{sentry_home}}"
+ # ignore_errors: yes  # Raises error on second run when user exists
+#  tags: sentry-config
 
 - name: Configure Nginx
   template: src=nginx.conf.j2 dest={{nginx_dir|default('/etc/nginx')}}/sites-enabled/sentry.conf
